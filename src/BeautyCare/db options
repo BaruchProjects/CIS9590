@@ -1,0 +1,103 @@
+import sqlite3
+
+# Create database connection
+conn = sqlite3.connect('beauty_salon.db')
+c = conn.cursor()
+
+# Create table for customers
+c.execute('''CREATE TABLE IF NOT EXISTS customers
+             (id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT,
+              phone TEXT,
+              email TEXT,
+              address TEXT)''')
+
+# Create table for appointments
+c.execute('''CREATE TABLE IF NOT EXISTS appointments
+             (id INTEGER PRIMARY KEY AUTOINCREMENT,
+              customer_id INTEGER,
+              date TEXT,
+              time TEXT,
+              service TEXT,
+              price REAL,
+              FOREIGN KEY (customer_id) REFERENCES customers(id))''')
+
+# Define function to add a new customer
+def add_customer(name, phone, email, address):
+    c.execute('''INSERT INTO customers (name, phone, email, address)
+                 VALUES (?, ?, ?, ?)''', (name, phone, email, address))
+    conn.commit()
+
+# Define function to display all customers
+def display_customers():
+    c.execute('''SELECT * FROM customers''')
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+
+# Define function to search for a customer by name
+def search_customer(name):
+    c.execute('''SELECT * FROM customers WHERE name=?''', (name,))
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+
+# Define function to update a customer
+def update_customer(id, name, phone, email, address):
+    c.execute('''UPDATE customers SET name=?, phone=?, email=?, address=?
+                 WHERE id=?''', (name, phone, email, address, id))
+    conn.commit()
+
+# Define function to delete a customer
+def delete_customer(id):
+    c.execute('''DELETE FROM customers WHERE id=?''', (id,))
+    conn.commit()
+
+# Define function to add a new appointment
+def add_appointment(customer_id, date, time, service, price):
+    c.execute('''INSERT INTO appointments (customer_id, date, time, service, price)
+                 VALUES (?, ?, ?, ?, ?)''', (customer_id, date, time, service, price))
+    conn.commit()
+
+# Define function to display all appointments
+def display_appointments():
+    c.execute('''SELECT appointments.id, customers.name, appointments.date, appointments.time,
+                 appointments.service, appointments.price FROM appointments
+                 INNER JOIN customers ON appointments.customer_id=customers.id''')
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+
+# Define function to search for an appointment by customer name
+def search_appointment(name):
+    c.execute('''SELECT appointments.id, customers.name, appointments.date, appointments.time,
+                 appointments.service, appointments.price FROM appointments
+                 INNER JOIN customers ON appointments.customer_id=customers.id
+                 WHERE customers.name=?''', (name,))
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+
+# Define function to update an appointment
+def update_appointment(id, customer_id, date, time, service, price):
+    c.execute('''UPDATE appointments SET customer_id=?, date=?, time=?, service=?, price=?
+                 WHERE id=?''', (customer_id, date, time, service, price, id))
+    conn.commit()
+
+# Define function to delete an appointment
+def delete_appointment(id):
+    c.execute('''DELETE FROM appointments WHERE id=?''', (id,))
+    conn.commit()
+
+# Test the beauty salon database
+add_customer('Demmi', '917-587-5316', 'demmi.slaughter@ baruchmail.cuny.edu', '55 Lexington Ave')
+add_customer('Kigi, '585-350-4814', kigi.maeda@baruchmail.cuny.edu', '55 Lexington Ave')
+display_customers()
+search_reservation('Demmi')
+update_reservation(1, 'Demmi', '2022-03-02', '19:00', 5, ' demmi.slaughter@ baruchmail.cuny.edu ', '917-587-5316')
+delete_reservation(2)
+display_reservations()
+
+# Close database connection
+conn.close()
+
