@@ -3,3 +3,5 @@ Django==4.1.7
 sqlparse==0.4.3
 supervisor==4.2.5
 django-phonenumber-field==7.0.2
+django-cripsy-forms
+crispy-bootstrap4

@@ -34,6 +34,7 @@
                         <a href="/reviews" class="nav-item nav-link px-xl-5">Reviews</a>
                         <a href="/about" class="nav-item nav-link px-xl-5">About</a>
                         <a href="/contact" class="nav-item nav-link px-xl-5">Contact</a>
+                        <a href="{% url 'users-register' %}" class="nav-item nav-link px-xl-5">Register</a>
                     </div>
                 </div>
             </nav>
@@ -41,6 +42,13 @@
         </header>
 
         <div id="content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
             {% block content %}{% endblock %}
         </div>
 

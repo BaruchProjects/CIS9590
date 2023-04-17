@@ -1,12 +1,42 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-class Clients(models.Model):
+class ClientsManager(BaseUserManager):
+    def create_user(self, email, first_name, last_name, phone, password=None):
+        if not email:
+            raise ValueError('Email address is required')
+        if not first_name:
+            raise ValueError('First name is required')
+        if not last_name:
+            raise ValueError('Last name is required')
+
+        user = self.model(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+class Clients(AbstractBaseUser):
     client_id = models.IntegerField(primary_key=True)
+    email = models.EmailField(max_length=254, unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    email = models.EmailField(max_length=254, blank=True)
     phone = PhoneNumberField(blank=True)
+
+    objects = ClientsManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    def __str__(self):
+        return self.email
+
 
 class Salons(models.Model):
     salon_id = models.IntegerField(primary_key=True)
