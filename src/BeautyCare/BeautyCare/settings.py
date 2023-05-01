@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['*']
 # AUTH_USER_MODEL = 'main.Salons'
 
 # Application definition
-GOOGLE_API_KEY = 'AIzaSyBX7n4tEWOt4K5LtTVk2FGHYUuTLXz2eX0'
+GOOGLE_API_KEY = os.environ.get('google_api_key')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
