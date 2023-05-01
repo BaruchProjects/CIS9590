@@ -4,12 +4,12 @@ from django.contrib import messages
 
 def register(request):
     if request.method == 'POST':
+        request.POST.get('timeInput')
         form = ClientCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            messages.success(request, f'Account created for {email}!')
+            result = form.save(request)
+            messages.success(request, result.get('message'))
             return redirect('main-home')
-    else:
-        form = ClientCreationForm()
+    request.session['appointment_time'] = request.GET.get('timeInput')
+    form = ClientCreationForm()
     return render(request, 'users/register.html', {'form': form})

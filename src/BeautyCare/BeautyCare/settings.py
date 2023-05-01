@@ -27,9 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# AUTH_USER_MODEL = 'main.Salons'
 
 # Application definition
-
+GOOGLE_API_KEY = 'AIzaSyBX7n4tEWOt4K5LtTVk2FGHYUuTLXz2eX0'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'users',
+    'salons',
     'crispy_forms',
     'crispy_bootstrap4',
+    'address'
 ]
 
 MIDDLEWARE = [

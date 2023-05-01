@@ -1,3 +1,4 @@
+from address.models import AddressField
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -22,6 +23,33 @@ class ClientsManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
+class SalonManager(BaseUserManager):
+    def create_user(self, email, name, address, phone, password, **extra_fields):
+        if not email:
+            raise ValueError('Email address is required')
+        if not name:
+            raise ValueError('Business name is required')
+        if not address:
+            raise ValueError('Business address is required')
+        if not phone:
+            raise ValueError('Business phone number is required')
+        if not password:
+            raise ValueError('Password is required')
+
+        salon = self.model(
+            email=self.normalize_email(email),
+            name=name,
+            address=address,
+            phone=phone,
+            **extra_fields
+        )
+
+        salon.set_password(password)
+        salon.save(using=self._db)
+        return salon
+    
+
 class Clients(AbstractBaseUser):
     client_id = models.IntegerField(primary_key=True)
     email = models.EmailField(max_length=254, unique=True)
@@ -41,9 +69,12 @@ class Clients(AbstractBaseUser):
 class Salons(models.Model):
     salon_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
-    address = models.CharField(max_length=300)
+    email = models.EmailField(max_length=254, unique=True)
+    address = AddressField()
     phone = PhoneNumberField()
     website = models.URLField(max_length = 200, blank=True)
+    password = models.CharField(max_length=100)
+    
 
 class Stylists(models.Model):
     stylist_id = models.IntegerField(primary_key=True)
