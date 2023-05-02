@@ -16,8 +16,8 @@ class ClientCreationForm(forms.Form):
         client = Clients.objects.filter(email=self.data.get('email')).first()
         if not client:
             data = {field.name: self.data.get(field.name) for field in Clients._meta.get_fields() if field.name in self.data}
-            client = Clients.objects.create(**data)
-            client.save()
+            Clients.objects.create(**data)
+            client = Clients.objects.filter(email=self.data.get('email')).first()
 
         appointment = {
             'client_id': client,
