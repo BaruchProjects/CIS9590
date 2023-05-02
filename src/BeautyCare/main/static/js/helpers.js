@@ -80,6 +80,7 @@ function getTimesForDate() {
         },
         body: JSON.stringify({ "date": dateInput.value})
     }).then((response) => response.json()).then((responseData) => {
+        var enableButton = false;
         for (time of responseData) {
             console.log(time);
             var option = document.createElement('option');
@@ -87,12 +88,16 @@ function getTimesForDate() {
             option.setAttribute('value', time['time'])
             if (time['available'] == false) {
                 option.disabled = true;
+            } else {
+                enableButton = true;
             }
             timeSelect.appendChild(option);
         }
         schedulingDiv.appendChild(timeSelect);
-        var nextButton = document.getElementById("nextCustomerInfo");
-        nextButton.disabled = false;
+        if (enableButton) {
+            var nextButton = document.getElementById("nextCustomerInfo");
+            nextButton.disabled = false;
+        }
     }
     )
 }

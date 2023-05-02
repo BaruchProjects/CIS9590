@@ -30,6 +30,11 @@ def available_times(request):
     services_available = Services.objects.filter(salon_id=salon.salon_id).values('service_id')
     existing_appointments = Appointments.objects.filter(appointment_date__date=date.date(), service_id__in=services_available).values()
     taken = {appointment['appointment_date'].hour for appointment in existing_appointments}
+
+    if date.date() == datetime.datetime.now().date():
+        for hour in range(0, datetime.datetime.today().hour + 1):
+            taken.add(hour)
+            
     while date.hour <= 20:
         if date.hour >= 9:
             times_available.append({'text': date.strftime('%H:%M'), 'time': str(date), 'available': False if date.hour in taken else True})
