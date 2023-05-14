@@ -37,7 +37,7 @@ def available_times(request):
             
     while date.hour <= 20:
         if date.hour >= 9:
-            times_available.append({'text': date.strftime('%H:%M'), 'time': str(date), 'available': False if date.hour in taken else True})
+            times_available.append({'text': date.strftime('%H:%M'), 'time': str(date), 'available': False if date.hour in taken or date.date() < datetime.datetime.now().date() else True})
         date = date + datetime.timedelta(hours=1)
     return JsonResponse(times_available, safe=False)
 

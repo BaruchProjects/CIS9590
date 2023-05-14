@@ -8,14 +8,14 @@ class ClientCreationForm(forms.Form):
     email = forms.EmailField()
     first_name = forms.CharField(label='First name', required=True)
     last_name = forms.CharField(label='Last name', required=True)
-    phone = PhoneNumberField()
+    phone = PhoneNumberField(region='US')
 
     def save(self, request):
         appointment_time = request.session['appointment_time']
         service_id = Services.objects.filter(service_id=request.session['service_id']).first()
         client = Clients.objects.filter(email=self.data.get('email')).first()
         if not client:
-            data = {field.name: self.data.get(field.name) for field in Clients._meta.get_fields() if field.name in self.data}
+            data = {field.name: self.data.get(field.name) for field in Clients._meta.get_fields() if field.name in self.cleaned_data}
             Clients.objects.create(**data)
             client = Clients.objects.filter(email=self.data.get('email')).first()
 

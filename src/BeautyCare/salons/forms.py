@@ -7,19 +7,16 @@ from phonenumber_field.formfields import PhoneNumberField
 class SalonCreationForm(forms.Form):
     name = forms.CharField(label='Business Name', max_length=80)
     email = forms.EmailField()
-    phone = PhoneNumberField(label='Business Phone Number')
+    phone = PhoneNumberField(label='Business Phone Number', region='US')
     address = AddressField(label='Business Address')
     website = forms.CharField(label='Business Website URL (if applicable)', required=False)
     password = forms.CharField(min_length=8, max_length=32, widget=forms.PasswordInput)
     passwordc = forms.CharField(min_length=8, max_length=32, widget=forms.PasswordInput, label='Confirm Password')
-    # class Meta:
-    #     model = Salons
-    #     fields = ('name', 'address', 'phone', 'website', 'password', 'passwordc')
     
     def save(self):
         if Salons.objects.filter(email=self.data['email']):
             return {'success': False, 'message': 'An account already exist for this email address.'}
-        data = {field.name: self.data.get(field.name) for field in Salons._meta.get_fields() if field.name in self.data}
+        data = {field.name: self.data.get(field.name) for field in Salons._meta.get_fields() if field.name in self.cleaned_data}
         data['password'] = make_password(data['password'])
         data['address'] = self._get_address_object(self.data)
         Salons.objects.create(**data)

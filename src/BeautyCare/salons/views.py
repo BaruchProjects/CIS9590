@@ -16,6 +16,7 @@ def register(request):
             request.session['email'] = email
             request.session['is_authenticated'] = True
             return redirect('salons-selectservices')
+        return render(request, 'salons/registration.html', {'form': form})
     if request.session.get('is_authenticated'):
         return redirect('salons-selectservices')
     form = SalonCreationForm()

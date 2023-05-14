@@ -10,6 +10,7 @@ def register(request):
             result = form.save(request)
             messages.success(request, result.get('message'))
             return redirect('main-home')
+        return render(request, 'users/register.html', {'form': form})
     request.session['appointment_time'] = request.GET.get('timeInput')
     form = ClientCreationForm()
     return render(request, 'users/register.html', {'form': form})
