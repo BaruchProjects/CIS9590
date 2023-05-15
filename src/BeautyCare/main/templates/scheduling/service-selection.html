@@ -4,40 +4,47 @@
 {% block content %}
 
     {% if messages %}
-    <div class="messages">
-    {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
-            {{ message }}
+        <!-- Display messages -->
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    </div>
     {% endif %}
 
     <div class="content-section ms-2">
         <div>Choose one service item</div>
         <form method="POST" action="select-time">
-        {% csrf_token %}
-        <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Select</th>
-                <th scope="col">Service Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for service in services %}
-            <tr>
-                <td scope="row"><input onclick="disableOthers(this)" name="svcChkbx" type="checkbox" value="{{ service.service_id }}"></td>
-                <td>{{ service.service_name }}</td>
-                <td>{{ service.description }}</td>
-                <td>${{ service.price }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-        </table>
-        <button type="submit" class="btn btn-outline-info">Next(Select Time)</button>
+            {% csrf_token %}
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Select</th>
+                        <th scope="col">Service Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in services %}
+                        <!-- Iterate over services -->
+                        <tr>
+                            <td scope="row"><input onclick="disableOthers(this)" name="svcChkbx" type="checkbox" value="{{ service.service_id }}"></td>
+                            <!-- Checkbox to select the service -->
+                            <td>{{ service.service_name }}</td>
+                            <!-- Display service name -->
+                            <td>{{ service.description }}</td>
+                            <!-- Display service description -->
+                            <td>${{ service.price }}</td>
+                            <!-- Display service price -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-outline-info">Next (Select Time)</button>
+            <!-- Button to submit the form and proceed to select time -->
         </form>
     </div>
 {% endblock %}

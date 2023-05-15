@@ -4,23 +4,24 @@
 {% block content %}
 
     {% if messages %}
-    <div class="messages">
-    {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
-            {{ message }}
+        <!-- Display messages -->
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    </div>
     {% endif %}
 
     <div class="content-section ms-2">
         <form action="register">
-        {% csrf_token %}
-        <div id="schedulingItems" class="pb-2">
-            <div>Choose a date</div>
-            <input name="dateInput" onchange="getTimesForDate()" type="date" id="date">
-        </div>
-        <button id="nextCustomerInfo" type="submit" class="btn btn-outline-info" disabled>Next(Customer Info)</button>
+            {% csrf_token %}
+            <div id="schedulingItems" class="pb-2">
+                <div>Choose a date</div>
+                <input name="dateInput" onchange="getTimesForDate()" type="date" id="date">
+            </div>
+            <button id="nextCustomerInfo" type="submit" class="btn btn-outline-info" disabled>Next (Customer Info)</button>
         </form>
     </div>
 {% endblock %}

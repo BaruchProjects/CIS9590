@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class ClientsManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, phone, password=None):
+        # Check if required fields are provided
         if not email:
             raise ValueError('Email address is required')
         if not first_name:
@@ -12,6 +13,7 @@ class ClientsManager(BaseUserManager):
         if not last_name:
             raise ValueError('Last name is required')
 
+        # Create a new user object with the provided data
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
@@ -19,6 +21,7 @@ class ClientsManager(BaseUserManager):
             phone=phone
         )
 
+        # Set the user's password and save the user object
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -26,6 +29,7 @@ class ClientsManager(BaseUserManager):
 
 class SalonManager(BaseUserManager):
     def create_user(self, email, name, address, phone, password, **extra_fields):
+        # Check if required fields are provided
         if not email:
             raise ValueError('Email address is required')
         if not name:
@@ -37,6 +41,7 @@ class SalonManager(BaseUserManager):
         if not password:
             raise ValueError('Password is required')
 
+        # Create a new salon object with the provided data
         salon = self.model(
             email=self.normalize_email(email),
             name=name,
@@ -45,69 +50,82 @@ class SalonManager(BaseUserManager):
             **extra_fields
         )
 
+        # Set the salon's password and save the salon object
         salon.set_password(password)
         salon.save(using=self._db)
         return salon
+
     
 
 class Clients(AbstractBaseUser):
+    # Model for clients/customers
     client_id = models.IntegerField(primary_key=True)
     email = models.EmailField(max_length=254, unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     phone = PhoneNumberField(blank=True)
 
-    objects = ClientsManager()
+    objects = ClientsManager()  # Manager for handling client creation and management
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = 'email'  # Field to use for authentication
+    REQUIRED_FIELDS = ['first_name', 'last_name']  # Additional required fields
 
     def __str__(self):
         return self.email
 
 
 class Salons(models.Model):
+    # Model for salons
     salon_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
     email = models.EmailField(max_length=254, unique=True)
     address = AddressField()
     phone = PhoneNumberField()
-    website = models.URLField(max_length = 200, blank=True)
+    website = models.URLField(max_length=200, blank=True)
     password = models.CharField(max_length=100)
-    
+
 
 class Stylists(models.Model):
+    # Model for stylists associated with salons
     stylist_id = models.IntegerField(primary_key=True)
     stylist_name = models.CharField(max_length=30)
     email = models.EmailField(max_length=254)
     phone = PhoneNumberField(blank=True)
-    salon_id = models.ForeignKey(Salons, on_delete=models.CASCADE)
+    salon_id = models.ForeignKey(Salons, on_delete=models.CASCADE)  # Foreign key relationship with Salons model
+
 
 class Reviews(models.Model):
+    # Model for reviews associated with salons
     review_id = models.IntegerField(primary_key=True)
     username = models.CharField(max_length=30)
     rating = models.IntegerField()
     comment = models.TextField(blank=True)
     review_date = models.DateTimeField()
-    salon_id = models.ForeignKey(Salons, on_delete=models.CASCADE)
+    salon_id = models.ForeignKey(Salons, on_delete=models.CASCADE)  # Foreign key relationship with Salons model
+
 
 class Services(models.Model):
+    # Model for services offered by salons
     service_id = models.IntegerField(primary_key=True)
     service_name = models.CharField(max_length=300)
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    salon_id = models.ForeignKey(Salons, on_delete=models.CASCADE)
+    salon_id = models.ForeignKey(Salons, on_delete=models.CASCADE)  # Foreign key relationship with Salons model
+
 
 class Appointments(models.Model):
+    # Model for appointments made by clients
     appointment_id = models.IntegerField(primary_key=True)
     appointment_date = models.DateTimeField()
     duration = models.IntegerField()
     notes = models.TextField(blank=True)
-    client_id = models.ForeignKey(Clients, on_delete=models.CASCADE)
-    service_id = models.ForeignKey(Services, on_delete=models.CASCADE)
+    client_id = models.ForeignKey(Clients, on_delete=models.CASCADE)  # Foreign key relationship with Clients model
+    service_id = models.ForeignKey(Services, on_delete=models.CASCADE)  # Foreign key relationship with Services model
+
 
 class Payments(models.Model):
+    # Model for payments associated with appointments
     payment_id = models.IntegerField(primary_key=True)
     amount = models.DecimalField(max_digits=6, decimal_places=2)
     payment_datetime = models.DateTimeField()
-    appointment_id = models.ForeignKey(Appointments, on_delete=models.CASCADE)
+    appointment_id = models.ForeignKey(Appointments, on_delete=models.CASCADE)  # Foreign key relationship with Appointments model
