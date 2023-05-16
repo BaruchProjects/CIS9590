@@ -15,7 +15,7 @@ class ClientCreationForm(forms.Form):
         service_id = Services.objects.filter(service_id=request.session['service_id']).first()
         client = Clients.objects.filter(email=self.data.get('email')).first()
         if not client:
-            data = {field.name: self.data.get(field.name) for field in Clients._meta.get_fields() if field.name in self.cleaned_data}
+            data = {field.name: self.cleaned_data.get(field.name) for field in Clients._meta.get_fields() if field.name in self.cleaned_data}
             Clients.objects.create(**data)
             client = Clients.objects.filter(email=self.data.get('email')).first()
 

@@ -16,7 +16,7 @@ class SalonCreationForm(forms.Form):
     def save(self):
         if Salons.objects.filter(email=self.data['email']):
             return {'success': False, 'message': 'An account already exist for this email address.'}
-        data = {field.name: self.data.get(field.name) for field in Salons._meta.get_fields() if field.name in self.cleaned_data}
+        data = {field.name: self.cleaned_data.get(field.name) for field in Salons._meta.get_fields() if field.name in self.cleaned_data}
         data['password'] = make_password(data['password'])
         data['address'] = self._get_address_object(self.data)
         Salons.objects.create(**data)
